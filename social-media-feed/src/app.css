@@ -1,0 +1,81 @@
+/* Global Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+  
+  /* Navbar Styles */
+  .MuiAppBar-root {
+    background-color: #1976d2;
+  }
+  .MuiToolbar-root {
+    display: flex;
+    justify-content: space-between;
+  }
+  .MuiButton-root {
+    color: white !important;
+  }
+  
+  /* Post Card Styles */
+  .MuiCard-root {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  .MuiCardContent-root {
+    padding: 16px;
+  }
+  .MuiTypography-h6 {
+    font-weight: bold;
+  }
+  .MuiTypography-body1 {
+    margin-top: 8px;
+  }
+  
+  /* Like & Comment Section */
+  .like-section {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .comment-section {
+    margin-top: 16px;
+    padding-left: 8px;
+    border-left: 3px solid #ddd;
+  }
+  .comment-input {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  
+  /* Forms (Register, Login, Create Post) */
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  .form-container input, .form-container button {
+    margin-top: 10px;
+  }
+  
+  /* Buttons */
+  .MuiButton-containedPrimary {
+    background-color: #1976d2 !important;
+    color: white !important;
+    font-weight: bold;
+    text-transform: none;
+  }
+  .MuiButton-containedPrimary:hover {
+    background-color: #135ba1 !important;
+  }
+  
