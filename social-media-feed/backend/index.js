@@ -147,25 +147,41 @@ app.get("/posts", (req, res) => {
 // Create a new post
 app.post("/posts", upload.single("imageURL"), (req, res) => {
   const { userId, content } = req.body;
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null; // Image URL if uploaded
+  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
   console.log("🔹 Creating Post - User ID:", userId);
   console.log("🔹 Content:", content);
-  console.log("🔹 Image URL:", imageUrl);
+  console.log("🔹 Image URL:", imageUrl || "No image uploaded");
 
-  // Input Validation
-  if (!userId) return res.status(400).json({ message: "User ID is required" });
-  if (!content) return res.status(400).json({ message: "Post content is required" });
+  if (!userId || !content) {
+    return res.status(400).json({ message: "User ID and content are required" });
+  }
 
-  const query = "INSERT INTO posts (userId, content, imageUrl) VALUES (?, ?, ?)";
-  db.query(query, [userId, content, imageUrl || null], (err, result) => {
-    if (err) {
-      console.error("Database error while inserting post:", err);
-      return res.status(500).json({ message: "Database error", error: err });
+  // ✅ First, check if userId exists in the users table
+  const userCheckQuery = "SELECT id FROM users WHERE id = ?";
+  db.query(userCheckQuery, [userId], (userErr, userResults) => {
+    if (userErr) {
+      console.error("❌ Database error while checking user:", userErr);
+      return res.status(500).json({ message: "Database error", error: userErr });
     }
-    res.json({ message: "✅ Post created successfully", postId: result.insertId });
+
+    if (userResults.length === 0) {
+      return res.status(400).json({ message: "❌ User ID does not exist" });
+    }
+
+    // ✅ Insert post after confirming user exists
+    const query = "INSERT INTO posts (userId, content, imageUrl) VALUES (?, ?, ?)";
+    db.query(query, [userId, content, imageUrl], (err, result) => {
+      if (err) {
+        console.error("❌ Database error while inserting post:", err);
+        return res.status(500).json({ message: "Database error", error: err });
+      }
+      res.status(201).json({ message: "✅ Post created successfully", postId: result.insertId });
+    });
   });
 });
+
+
 
 // Add a Comment
 app.post("/posts/:postId/comments", (req, res) => {
