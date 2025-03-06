@@ -56,7 +56,7 @@ app.post("/register", async (req, res) => {
     const checkUserQuery = "SELECT * FROM users WHERE email = ?";
     db.query(checkUserQuery, [email], async (err, results) => {
       if (err) {
-        console.error("❌ Database error while checking user:", err);
+        console.error("Database error while checking user:", err);
         return res.status(500).json({ message: "Database error", error: err });
       }
 
@@ -71,15 +71,15 @@ app.post("/register", async (req, res) => {
       const query = "INSERT INTO users (fullname, email, password) VALUES (?, ?, ?)";
       db.query(query, [fullname, email, hashedPassword], (err, result) => {
         if (err) {
-          console.error("❌ Database error while inserting user:", err);
+          console.error("Database error while inserting user:", err);
           return res.status(500).json({ message: "Database error", error: err });
         }
-        console.log("✅ User registered successfully:", fullname);
+        console.log("User registered successfully:", fullname);
         res.status(201).json({ message: "User registered successfully" });
       });
     });
   } catch (error) {
-    console.error("❌ Server error:", error);
+    console.error("Server error:", error);
     res.status(500).json({ message: "Internal Server Error", error });
   }
 });
@@ -100,7 +100,7 @@ app.post("/login", async (req, res) => {
     const checkUserQuery = "SELECT * FROM users WHERE email = ?";
     db.query(checkUserQuery, [email], async (err, results) => {
       if (err) {
-        console.error("❌ Database error while fetching user:", err);
+        console.error("Database error while fetching user:", err);
         return res.status(500).json({ message: "Database error", error: err });
       }
 
@@ -119,11 +119,11 @@ app.post("/login", async (req, res) => {
       // Generate a JWT token for authentication
       const token = jwt.sign({ id: user.id }, "secretkey", { expiresIn: "1h" });
 
-      console.log("✅ User logged in:", email);
+      console.log("User logged in:", email);
       res.json({ token, userId: user.id });
     });
   } catch (error) {
-    console.error("❌ Server error:", error);
+    console.error("Server error:", error);
     res.status(500).json({ message: "Internal Server Error", error });
   }
 });
@@ -154,14 +154,14 @@ app.post("/posts", upload.single("imageURL"), (req, res) => {
   console.log("🔹 Image URL:", imageUrl);
 
   // Input Validation
-  if (!userId) return res.status(400).json({ message: "❌ User ID is required" });
-  if (!content) return res.status(400).json({ message: "❌ Post content is required" });
+  if (!userId) return res.status(400).json({ message: "User ID is required" });
+  if (!content) return res.status(400).json({ message: "Post content is required" });
 
   const query = "INSERT INTO posts (userId, content, imageUrl) VALUES (?, ?, ?)";
   db.query(query, [userId, content, imageUrl || null], (err, result) => {
     if (err) {
-      console.error("❌ Database error while inserting post:", err);
-      return res.status(500).json({ message: "❌ Database error", error: err });
+      console.error("Database error while inserting post:", err);
+      return res.status(500).json({ message: "Database error", error: err });
     }
     res.json({ message: "✅ Post created successfully", postId: result.insertId });
   });
@@ -179,7 +179,7 @@ app.post("/posts/:postId/comments", (req, res) => {
   // Ensure postId exists before inserting comment
   db.query("SELECT id FROM posts WHERE id = ?", [postId], (err, results) => {
     if (err) {
-      console.error("❌ Error checking post existence:", err);
+      console.error("Error checking post existence:", err);
       return res.status(500).json({ message: "Database error", error: err });
     }
     
@@ -191,7 +191,7 @@ app.post("/posts/:postId/comments", (req, res) => {
     const query = "INSERT INTO comments (post_id, text) VALUES (?, ?)";
     db.query(query, [postId, text], (err, result) => {
       if (err) {
-        console.error("❌ Error adding comment:", err);
+        console.error("Error adding comment:", err);
         return res.status(500).json({ message: "Database error", error: err });
       }
 
@@ -212,7 +212,7 @@ app.get("/posts/:postId/comments", (req, res) => {
     [postId],
     (err, results) => {
       if (err) {
-        console.error("❌ Error fetching comments:", err);
+        console.error("Error fetching comments:", err);
         return res.status(500).json({ message: "Database error", error: err });
       }
 
@@ -228,7 +228,7 @@ app.post("/posts/:id/like", (req, res) => {
   // Check if the post exists before updating
   db.query("SELECT * FROM posts WHERE id = ?", [id], (err, results) => {
     if (err) {
-      console.error("❌ Database error:", err);
+      console.error("Database error:", err);
       return res.status(500).json({ message: "Database error", error: err });
     }
 
@@ -239,14 +239,14 @@ app.post("/posts/:id/like", (req, res) => {
     // If post exists, update likes
     db.query("UPDATE posts SET likes = likes + 1 WHERE id = ?", [id], (err, result) => {
       if (err) {
-        console.error("❌ Error updating likes:", err);
+        console.error("Error updating likes:", err);
         return res.status(500).json({ message: "Database error", error: err });
       }
 
       // Fetch updated like count
       db.query("SELECT likes FROM posts WHERE id = ?", [id], (err, updatedResult) => {
         if (err) {
-          console.error("❌ Error fetching updated likes:", err);
+          console.error("Error fetching updated likes:", err);
           return res.status(500).json({ message: "Database error", error: err });
         }
 
@@ -261,7 +261,7 @@ app.get("/posts/:id", (req, res) => {
 
   db.query("SELECT * FROM posts WHERE id = ?", [id], (err, results) => {
     if (err) {
-      console.error("❌ Database error:", err);
+      console.error("Database error:", err);
       return res.status(500).json({ message: "Database error", error: err });
     }
 
